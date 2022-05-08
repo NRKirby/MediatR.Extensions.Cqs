@@ -24,3 +24,7 @@ public class PingCommandHandler : ICommandHandler<PingCommand, Pong>
         => Task.FromResult(new Pong($"{command.Message} Pong"));
 }
 ```
+
+## Installing MediatR.Extensions.Cqs
+
+You find this package on [NuGet](https://www.nuget.org/packages/MediatR.Extensions.Cqs/)
