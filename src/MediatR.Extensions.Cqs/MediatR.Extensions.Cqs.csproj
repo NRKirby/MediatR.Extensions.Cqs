@@ -3,13 +3,14 @@
     <PropertyGroup>
         <Authors>Nick Kirby</Authors>
         <Description>Add CQS semantics to MediatR</Description>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>MediatR.Extensions.Cqs</RootNamespace>
         <PackageTags>mediator;mediatr;cqs</PackageTags>
         <Version>1.0.1</Version>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
