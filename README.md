@@ -1,6 +1,6 @@
 # MediatR.Extensions.Cqs
 
-Adds CQS abstractions over MediatR's request abstraction. To use, simply define query or command classes that implement `IQuery` or `ICommand` respectively
+Adds CQS semantics over MediatR's request abstraction. To use, simply define query or command classes that implement `IQuery` or `ICommand` respectively
 
 ```csharp
 public record PingQuery(string Message) : IQuery<Pong>;
