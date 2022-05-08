@@ -6,19 +6,19 @@ using Xunit;
 
 namespace MediatR.Extensions.Cqs.Tests;
 
-public class QueryHandlerTests
+public class QueryHandlerTests : TestBase
 {
+    private readonly IMediator _mediator;
+
+    public QueryHandlerTests()
+    {
+        _mediator = GetMediator();
+    }
+    
     [Fact]
     public async Task Query_WithResult_ShouldBeConnectedToQueryHandler()
     {
-        var services = new ServiceCollection()
-            .AddMediatR(typeof(PingQuery));
-
-        var provider = services.BuildServiceProvider();
-
-        var mediator = provider.GetRequiredService<IMediator>();
-
-        var result = await mediator.Send(new PingQuery("Ping"));
+        var result = await _mediator.Send(new PingQuery("Ping"));
 
         result.ShouldNotBeNull();
         result.Message.ShouldBe("Ping Pong");
@@ -27,14 +27,7 @@ public class QueryHandlerTests
     [Fact]
     public async Task Query_WithNoResult_ShouldBeConnectedToQueryHandler()
     {
-        var services = new ServiceCollection()
-            .AddMediatR(typeof(PingQuery));
-
-        var provider = services.BuildServiceProvider();
-
-        var mediator = provider.GetRequiredService<IMediator>();
-
-        var result = await mediator.Send(new PingVoidQuery("Ping"));
+        var result = await _mediator.Send(new PingVoidQuery("Ping"));
 
         result.ShouldBeAssignableTo<Unit>();
     }

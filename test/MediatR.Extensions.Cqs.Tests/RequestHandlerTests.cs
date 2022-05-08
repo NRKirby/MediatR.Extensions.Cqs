@@ -1,24 +1,23 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
 namespace MediatR.Extensions.Cqs.Tests;
 
-public class RequestHandlerTests
+public class RequestHandlerTests : TestBase
 {
+    private readonly IMediator _mediator;
+
+    public RequestHandlerTests()
+    {
+        _mediator = GetMediator();
+    }
+    
     [Fact]
     public async Task Request_ShouldBeConnectedToRequestHandler()
     {
-        var services = new ServiceCollection()
-            .AddMediatR(typeof(PingRequest));
-
-        var provider = services.BuildServiceProvider();
-
-        var mediator = provider.GetRequiredService<IMediator>();
-
-        var result = await mediator.Send(new PingRequest("Ping"));
+        var result = await _mediator.Send(new PingRequest("Ping"));
 
         result.ShouldNotBeNull();
         result.Message.ShouldBe("Ping Pong");
