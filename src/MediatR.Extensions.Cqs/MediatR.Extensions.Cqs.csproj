@@ -10,6 +10,7 @@
         <PackageTags>mediator;mediatr;cqs</PackageTags>
         <Version>1.0.2</Version>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/NRKirby/MediatR.Extensions.Cqs</RepositoryUrl> 
         <MinVerTagPrefix>v</MinVerTagPrefix>
         <LangVersion>10</LangVersion>
     </PropertyGroup>
