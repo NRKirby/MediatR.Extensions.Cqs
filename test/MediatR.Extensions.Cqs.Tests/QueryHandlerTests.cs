@@ -25,7 +25,7 @@ public class QueryHandlerTests
     }
     
     [Fact]
-    public async Task Command_WithNoResult_ShouldBeConnectedToCommandHandler()
+    public async Task Query_WithNoResult_ShouldBeConnectedToQueryHandler()
     {
         var services = new ServiceCollection()
             .AddMediatR(typeof(PingQuery));
