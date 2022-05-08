@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediatR.Extensions.Cqs", "src\MediatR.Extensions.Cqs\MediatR.Extensions.Cqs.csproj", "{CC6D0369-99DA-4A6B-8062-E53FBB78C360}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediatR.Extensions.Cqs.Tests", "test\MediatR.Extensions.Cqs.Tests\MediatR.Extensions.Cqs.Tests.csproj", "{4708BAD6-9D3F-4528-8931-E0C5207D3C4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC6D0369-99DA-4A6B-8062-E53FBB78C360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC6D0369-99DA-4A6B-8062-E53FBB78C360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC6D0369-99DA-4A6B-8062-E53FBB78C360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC6D0369-99DA-4A6B-8062-E53FBB78C360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4708BAD6-9D3F-4528-8931-E0C5207D3C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4708BAD6-9D3F-4528-8931-E0C5207D3C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4708BAD6-9D3F-4528-8931-E0C5207D3C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4708BAD6-9D3F-4528-8931-E0C5207D3C4D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
