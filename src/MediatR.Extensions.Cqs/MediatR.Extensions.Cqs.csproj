@@ -10,11 +10,16 @@
         <PackageTags>mediator;mediatr;cqs</PackageTags>
         <Version>1.0.2</Version>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
         <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="10.0.1" />
+      <PackageReference Include="MinVer" Version="3.1.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>
