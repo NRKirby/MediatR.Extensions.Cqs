@@ -1,27 +1,40 @@
 # MediatR.Extensions.Cqs
 
-Adds [CQS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation) semantics over MediatR's request abstraction. To use, simply define query or command classes that implement `IQuery` or `ICommand` respectively
+A simple library that adds [CQS](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation) semantics over MediatR's `IRequest` abstraction. 
+
+## How can I use the library?
+
+### Queries
 
 ```csharp
+
+// Define a query
+
 public record PingQuery(string Message) : IQuery<Pong>;
 
-public record PingCommand(string Message) : ICommand<Pong>;
-```
+// Define a query handler
 
-Then define their respective handlers
-
-```csharp
 public class PingQueryHandler : IQueryHandler<PingQuery, Pong>
 {
-    public Task<Pong> Handle(PingQuery query, CancellationToken cancellationToken)
-        => Task.FromResult(new Pong($"{query.Message} Pong"));
+    public async Task<Pong> Handle(PingQuery query, CancellationToken cancellationToken)
+        => await new Pong($"{query.Message} Pong");
 }
+```
 
+### Commands
+
+```csharp
+
+// Define a command
+
+public record PingCommand(string Message) : ICommand<Pong>;
+
+// Define a command handler
 
 public class PingCommandHandler : ICommandHandler<PingCommand, Pong>
 {
-    public Task<Pong> Handle(PingCommand command, CancellationToken cancellationToken)
-        => Task.FromResult(new Pong($"{command.Message} Pong"));
+    public async Task<Pong> Handle(PingCommand command, CancellationToken cancellationToken)
+        => await new Pong($"{command.Message} Pong");
 }
 ```
 
