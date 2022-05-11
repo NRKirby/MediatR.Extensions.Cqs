@@ -8,13 +8,11 @@ A simple library that adds [CQS](https://en.wikipedia.org/wiki/Command%E2%80%93q
 
 ```csharp
 
-// Define a query
+// Define a query that implements IQuery
+public record Query(string Message) : IQuery<Pong>;
 
-public record PingQuery(string Message) : IQuery<Pong>;
-
-// Define a query handler
-
-public class PingQueryHandler : IQueryHandler<PingQuery, Pong>
+// Define a query handler that implements IQueryHandler
+public class QueryHandler : IQueryHandler<PingQuery, Pong>
 {
     public async Task<Pong> Handle(PingQuery query, CancellationToken cancellationToken)
         => await new Pong($"{query.Message} Pong");
@@ -25,13 +23,11 @@ public class PingQueryHandler : IQueryHandler<PingQuery, Pong>
 
 ```csharp
 
-// Define a command
+// Define a command implements ICommand
+public record Command(string Message) : ICommand<Pong>;
 
-public record PingCommand(string Message) : ICommand<Pong>;
-
-// Define a command handler
-
-public class PingCommandHandler : ICommandHandler<PingCommand, Pong>
+// Define a command handler that implements ICommandHandler
+public class CommandHandler : ICommandHandler<PingCommand, Pong>
 {
     public async Task<Pong> Handle(PingCommand command, CancellationToken cancellationToken)
         => await new Pong($"{command.Message} Pong");
