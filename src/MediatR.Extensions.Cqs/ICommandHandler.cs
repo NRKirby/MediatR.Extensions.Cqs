@@ -12,9 +12,11 @@ public interface ICommandHandler<in TCommand, TResponse> : IRequestHandler<TComm
     /// Handles a command
     /// </summary>
     /// <param name="command">The command</param>
-    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Response from the command</returns>
-    new Task<TResponse> Handle(TCommand command, CancellationToken cancellationToken);
+    Task<TResponse> Handle(TCommand command);
+
+    Task<TResponse> IRequestHandler<TCommand, TResponse>.Handle(TCommand request, CancellationToken _) 
+        => Handle(request);
 }
 
 /// <summary>
@@ -29,13 +31,12 @@ public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand, Unit>
     /// Handles a command
     /// </summary>
     /// <param name="command">The command</param>
-    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Response from the command</returns>
-    new Task Handle(TCommand command, CancellationToken cancellationToken);
+    Task Handle(TCommand command);
 
-    async Task<Unit> IRequestHandler<TCommand, Unit>.Handle(TCommand request, CancellationToken cancellationToken)
+    async Task<Unit> IRequestHandler<TCommand, Unit>.Handle(TCommand request, CancellationToken _)
     {
-        await Handle(request, cancellationToken);
+        await Handle(request);
 
         return Unit.Value;
     }

@@ -3,7 +3,7 @@
 /// <summary>
 /// Marker interface to represent a command with a void response
 /// </summary>
-public interface ICommand : IRequest<Unit> { }
+public interface ICommand : IRequest<Unit>, IBaseCommand { }
 
 /// <summary>
 /// Marker interface to represent a command with a response

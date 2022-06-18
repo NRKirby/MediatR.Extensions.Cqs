@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Shouldly;
@@ -30,13 +31,40 @@ public class CommandHandlerTests : TestBase
 
         result.ShouldBeAssignableTo<Unit>();
     }
+
+    [Fact]
+    public async Task Cancellable_command_handler_with_result_gets_cancel_signal()
+    {
+        await SendCommandAndThenCancel(new LongPingCommand("Ping"));
+    }
+
+    [Fact]
+    public async Task Cancellable_command_handler_gets_cancel_signal()
+    {
+        await SendCommandAndThenCancel(new LongPingVoidCommand("Ping"));
+    }
+
+    private async Task SendCommandAndThenCancel(IBaseCommand command)
+    {
+        using var tokenSource = new CancellationTokenSource();
+
+        var task = _mediator.Send(command, tokenSource.Token);
+
+        await Task.Delay(50, tokenSource.Token);
+
+        tokenSource.Cancel();
+
+        Func<Task> waitingTask = async () => await task;
+
+        waitingTask.ShouldThrow<TaskCanceledException>();
+    }
 }
 
 public record PingCommand(string Message) : ICommand<Pong>;
 
 public class PingCommandHandler : ICommandHandler<PingCommand, Pong>
 {
-    public Task<Pong> Handle(PingCommand command, CancellationToken cancellationToken)
+    public Task<Pong> Handle(PingCommand command)
         => Task.FromResult(new Pong($"{command.Message} Pong"));
 }
 
@@ -44,6 +72,33 @@ public record PingVoidCommand(string Message) : ICommand;
 
 public class PingVoidCommandHandler : ICommandHandler<PingVoidCommand>
 {
-    public Task Handle(PingVoidCommand request, CancellationToken cancellationToken)
-        => Task.Delay(0, cancellationToken);
+    public Task Handle(PingVoidCommand command)
+        => Task.Delay(0);
+}
+
+public record LongPingCommand(string Message) : ICommand<Pong>;
+
+public class LongPingCommandHandler : ICancellableCommandHandler<LongPingCommand, Pong>
+{
+    public async Task<Pong> Handle(LongPingCommand command, CancellationToken cancellationToken)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            await Task.Delay(50, cancellationToken);
+        }
+
+        return new Pong($"{command.Message} Pong");
+    }
+}
+public record LongPingVoidCommand(string Message) : ICommand;
+
+public class LongPingVoidCommandHandler : ICancellableCommandHandler<LongPingVoidCommand>
+{
+    public async Task Handle(LongPingVoidCommand command, CancellationToken cancellationToken)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            await Task.Delay(50, cancellationToken);
+        }
+    }
 }
