@@ -10,6 +10,7 @@ public interface ICancellableQueryHandler<in TQuery, TResponse> : IRequestHandle
 {
     /// <summary>
     /// Handle a query.
+    /// Provides a <see cref="CancellationToken"></see> to allow cancelling current handling process.
     /// </summary>
     /// <param name="query">Query</param>
     /// <param name="cancellationToken">Cancellation token</param>
