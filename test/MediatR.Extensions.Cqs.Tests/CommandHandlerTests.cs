@@ -1,6 +1,5 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
@@ -45,6 +44,6 @@ public record PingVoidCommand(string Message) : ICommand;
 
 public class PingVoidCommandHandler : ICommandHandler<PingVoidCommand>
 {
-    public Task<Unit> Handle(PingVoidCommand request, CancellationToken cancellationToken)
-        => Task.FromResult(Unit.Value);
+    public Task Handle(PingVoidCommand request, CancellationToken cancellationToken)
+        => Task.Delay(0, cancellationToken);
 }
