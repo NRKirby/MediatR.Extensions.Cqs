@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
 
@@ -25,26 +23,29 @@ public class QueryHandlerTests : TestBase
     }
     
     [Fact]
-    public async Task Query_WithNoResult_ShouldBeConnectedToQueryHandler()
+    public async Task Synchronous_query_handler_is_correctly_called_by_mediator()
     {
-        var result = await _mediator.Send(new PingVoidQuery("Ping"));
+        var result = await _mediator.Send(new GetUserDetails());
 
-        result.ShouldBeAssignableTo<Unit>();
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<UserDetails>();
     }
     
     public record PingQuery(string Message) : IQuery<Pong>;
 
     public class PingQueryHandler : IQueryHandler<PingQuery, Pong>
     {
-        public Task<Pong> Handle(PingQuery query, CancellationToken cancellationToken)
+        public Task<Pong> Handle(PingQuery query)
             => Task.FromResult(new Pong($"{query.Message} Pong"));
     }
 
-    public record PingVoidQuery(string Message) : IQuery;
+    public record GetUserDetails : IQuery<UserDetails>;
 
-    public class PingVoidQueryHandler : IQueryHandler<PingVoidQuery>
+    private record UserDetails;
+
+    private class GetUserDetailsHandler : SynchronousQueryHandler<GetUserDetails, UserDetails>
     {
-        public Task<Unit> Handle(PingVoidQuery query, CancellationToken cancellationToken)
-            => Task.FromResult(Unit.Value);
+        protected override UserDetails Handle(GetUserDetails query) => new();
     }
 }
+
