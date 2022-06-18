@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
 
@@ -30,7 +32,21 @@ public class QueryHandlerTests : TestBase
         result.ShouldNotBeNull();
         result.ShouldBeAssignableTo<UserDetails>();
     }
-    
+
+    [Fact]
+    public async Task Cancellable_query_handler_gets_cancel_signal()
+    {
+        using var tokenSource = new CancellationTokenSource();
+
+        var task = _mediator.Send(new GetHugeData(), tokenSource.Token);
+
+        tokenSource.Cancel();
+
+        Func<Task> waitingTask = async () => await task;
+
+        await waitingTask.ShouldThrowAsync<TaskCanceledException>();
+    }
+
     public record PingQuery(string Message) : IQuery<Pong>;
 
     public class PingQueryHandler : IQueryHandler<PingQuery, Pong>
@@ -46,6 +62,20 @@ public class QueryHandlerTests : TestBase
     private class GetUserDetailsHandler : SynchronousQueryHandler<GetUserDetails, UserDetails>
     {
         protected override UserDetails Handle(GetUserDetails query) => new();
+    }
+
+    public record GetHugeData : IQuery<HugeData>;
+
+    private record HugeData;
+
+    private class GetHugeDataHandler : ICancellableQueryHandler<GetHugeData, HugeData>
+    {
+        public async Task<HugeData> Handle(GetHugeData query, CancellationToken cancellationToken)
+        {
+            await Task.Delay(100, cancellationToken);
+
+            return new HugeData();
+        }
     }
 }
 

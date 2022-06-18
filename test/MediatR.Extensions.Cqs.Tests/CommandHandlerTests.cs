@@ -50,13 +50,11 @@ public class CommandHandlerTests : TestBase
 
         var task = _mediator.Send(command, tokenSource.Token);
 
-        await Task.Delay(50, tokenSource.Token);
-
         tokenSource.Cancel();
 
         Func<Task> waitingTask = async () => await task;
 
-        waitingTask.ShouldThrow<TaskCanceledException>();
+        await waitingTask.ShouldThrowAsync<TaskCanceledException>();
     }
 }
 
@@ -82,11 +80,8 @@ public class LongPingCommandHandler : ICancellableCommandHandler<LongPingCommand
 {
     public async Task<Pong> Handle(LongPingCommand command, CancellationToken cancellationToken)
     {
-        for (int i = 0; i < 10; i++)
-        {
-            await Task.Delay(50, cancellationToken);
-        }
-
+        await Task.Delay(100, cancellationToken);
+        
         return new Pong($"{command.Message} Pong");
     }
 }
@@ -96,9 +91,6 @@ public class LongPingVoidCommandHandler : ICancellableCommandHandler<LongPingVoi
 {
     public async Task Handle(LongPingVoidCommand command, CancellationToken cancellationToken)
     {
-        for (int i = 0; i < 10; i++)
-        {
-            await Task.Delay(50, cancellationToken);
-        }
+        await Task.Delay(100, cancellationToken);
     }
 }
