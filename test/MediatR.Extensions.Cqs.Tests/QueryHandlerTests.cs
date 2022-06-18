@@ -1,6 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
@@ -25,26 +25,52 @@ public class QueryHandlerTests : TestBase
     }
     
     [Fact]
-    public async Task Query_WithNoResult_ShouldBeConnectedToQueryHandler()
+    public async Task Query_is_processed_by_synchronous_handler()
     {
-        var result = await _mediator.Send(new PingVoidQuery("Ping"));
+        var result = await _mediator.Send(new GetUserDetails());
 
-        result.ShouldBeAssignableTo<Unit>();
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<UserDetails>();
     }
-    
-    public record PingQuery(string Message) : IQuery<Pong>;
 
+    [Fact]
+    public async Task Cancellable_query_handler_gets_cancel_signal()
+    {
+        using var tokenSource = new CancellationTokenSource();
+
+        var task = _mediator.Send(new GetHugeData(), tokenSource.Token);
+
+        tokenSource.Cancel();
+
+        Func<Task> waitingTask = async () => await task;
+
+        await waitingTask.ShouldThrowAsync<TaskCanceledException>();
+    }
+
+    public record PingQuery(string Message) : IQuery<Pong>;
     public class PingQueryHandler : IQueryHandler<PingQuery, Pong>
     {
-        public Task<Pong> Handle(PingQuery query, CancellationToken cancellationToken)
+        public Task<Pong> Handle(PingQuery query)
             => Task.FromResult(new Pong($"{query.Message} Pong"));
     }
 
-    public record PingVoidQuery(string Message) : IQuery;
-
-    public class PingVoidQueryHandler : IQueryHandler<PingVoidQuery>
+    public record GetUserDetails : IQuery<UserDetails>;
+    private record UserDetails;
+    private class GetUserDetailsHandler : SynchronousQueryHandler<GetUserDetails, UserDetails>
     {
-        public Task<Unit> Handle(PingVoidQuery query, CancellationToken cancellationToken)
-            => Task.FromResult(Unit.Value);
+        protected override UserDetails Handle(GetUserDetails query) => new();
+    }
+
+    public record GetHugeData : IQuery<HugeData>;
+    private record HugeData;
+    private class GetHugeDataHandler : ICancellableQueryHandler<GetHugeData, HugeData>
+    {
+        public async Task<HugeData> Handle(GetHugeData query, CancellationToken cancellationToken)
+        {
+            await Task.Delay(100, cancellationToken);
+
+            return new HugeData();
+        }
     }
 }
+
