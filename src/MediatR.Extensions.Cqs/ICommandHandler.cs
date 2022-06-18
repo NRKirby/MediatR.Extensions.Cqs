@@ -15,7 +15,7 @@ public interface ICommandHandler<in TCommand, TResponse> : IRequestHandler<TComm
     /// <returns>Response from the command</returns>
     Task<TResponse> Handle(TCommand command);
 
-    Task<TResponse> IRequestHandler<TCommand, TResponse>.Handle(TCommand request, CancellationToken _) 
+    Task<TResponse> IRequestHandler<TCommand, TResponse>.Handle(TCommand request, CancellationToken _)
         => Handle(request);
 }
 
@@ -41,3 +41,4 @@ public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand, Unit>
         return Unit.Value;
     }
 }
+

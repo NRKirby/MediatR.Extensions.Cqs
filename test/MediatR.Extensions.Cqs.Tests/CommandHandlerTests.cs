@@ -44,6 +44,22 @@ public class CommandHandlerTests : TestBase
         await SendCommandAndThenCancel(new LongPingVoidCommand("Ping"));
     }
 
+    [Fact]
+    public async Task Command_is_processed_by_synchronous_handler()
+    {
+        var result = await _mediator.Send(new RunCommandLine());
+
+        result.ShouldBeAssignableTo<Unit>();
+    }
+
+    [Fact]
+    public async Task Command_with_result_is_processed_by_synchronous_handler()
+    {
+        var result = await _mediator.Send(new RunCommandLineWithOutput());
+
+        result.ShouldBeAssignableTo<Output>();
+    }
+
     private async Task SendCommandAndThenCancel(IBaseCommand command)
     {
         using var tokenSource = new CancellationTokenSource();
@@ -93,4 +109,20 @@ public class LongPingVoidCommandHandler : ICancellableCommandHandler<LongPingVoi
     {
         await Task.Delay(100, cancellationToken);
     }
+}
+
+public record RunCommandLine : ICommand;
+
+public class RunCommandLineHandler : SynchronousCommandHandler<RunCommandLine>
+{
+    protected override void Handle(RunCommandLine command)
+    {
+        // doing stuff
+    }
+}
+public record RunCommandLineWithOutput : ICommand<Output>;
+public record Output;
+public class RunCommandLineWithOutputHandler : SynchronousCommandHandler<RunCommandLineWithOutput, Output>
+{
+    protected override Output Handle(RunCommandLineWithOutput command) => new();
 }

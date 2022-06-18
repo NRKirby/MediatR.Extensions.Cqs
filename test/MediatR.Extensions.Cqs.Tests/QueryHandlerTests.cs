@@ -25,7 +25,7 @@ public class QueryHandlerTests : TestBase
     }
     
     [Fact]
-    public async Task Synchronous_query_handler_is_correctly_called_by_mediator()
+    public async Task Query_is_processed_by_synchronous_handler()
     {
         var result = await _mediator.Send(new GetUserDetails());
 
@@ -48,7 +48,6 @@ public class QueryHandlerTests : TestBase
     }
 
     public record PingQuery(string Message) : IQuery<Pong>;
-
     public class PingQueryHandler : IQueryHandler<PingQuery, Pong>
     {
         public Task<Pong> Handle(PingQuery query)
@@ -56,18 +55,14 @@ public class QueryHandlerTests : TestBase
     }
 
     public record GetUserDetails : IQuery<UserDetails>;
-
     private record UserDetails;
-
     private class GetUserDetailsHandler : SynchronousQueryHandler<GetUserDetails, UserDetails>
     {
         protected override UserDetails Handle(GetUserDetails query) => new();
     }
 
     public record GetHugeData : IQuery<HugeData>;
-
     private record HugeData;
-
     private class GetHugeDataHandler : ICancellableQueryHandler<GetHugeData, HugeData>
     {
         public async Task<HugeData> Handle(GetHugeData query, CancellationToken cancellationToken)
